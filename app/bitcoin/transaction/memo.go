@@ -379,6 +379,9 @@ func saveMemoFollow(txn *db.Transaction, out *db.TransactionOut, block *db.Block
 }
 
 func saveMemoLike(txn *db.Transaction, out *db.TransactionOut, block *db.Block, inputAddress *btcutil.AddressPubKeyHash, parentHash []byte) error {
+	if len(out.PkScript) < 37 {
+		return jerr.New("script too short")
+	}
 	memoLike, err := db.GetMemoLike(txn.Hash)
 	if err != nil && ! db.IsRecordNotFoundError(err) {
 		return jerr.Get("error getting memo_like", err)
